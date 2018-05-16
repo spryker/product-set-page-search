@@ -5,45 +5,99 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace Spryker\Zed\ProductSetPageSearch\Communication\Plugin\Event\Listener;
+namespace Spryker\Zed\ProductSetPageSearch\Business\Search;
 
 use Generated\Shared\Transfer\LocaleTransfer;
 use Generated\Shared\Transfer\ProductImageSetTransfer;
 use Generated\Shared\Transfer\ProductSetPageSearchTransfer;
 use Generated\Shared\Transfer\StorageProductImageTransfer;
 use Orm\Zed\ProductSetPageSearch\Persistence\SpyProductSetPageSearch;
+use Spryker\Shared\Kernel\Store;
 use Spryker\Shared\ProductSetPageSearch\ProductSetPageSearchConstants;
-use Spryker\Zed\Kernel\Communication\AbstractPlugin;
+use Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToProductSetInterface;
+use Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToSearchInterface;
+use Spryker\Zed\ProductSetPageSearch\Dependency\Service\ProductSetPageSearchToUtilEncodingInterface;
+use Spryker\Zed\ProductSetPageSearch\Persistence\ProductSetPageSearchQueryContainerInterface;
 
-/**
- * @method \Spryker\Zed\ProductSetPageSearch\Persistence\ProductSetPageSearchQueryContainerInterface getQueryContainer()
- * @method \Spryker\Zed\ProductSetPageSearch\Communication\ProductSetPageSearchCommunicationFactory getFactory()
- */
-class AbstractProductSetPageSearchListener extends AbstractPlugin
+class ProductSetPageSearchWriter implements ProductSetPageSearchWriterInterface
 {
     const COL_ID_PRODUCT_SET = 'id_product_set';
 
     /**
-     * @param array $productAbstractIds
+     * @var \Spryker\Zed\ProductSetPageSearch\Persistence\ProductSetPageSearchQueryContainerInterface
+     */
+    protected $queryContainer;
+
+    /**
+     * @var \Spryker\Zed\ProductSetPageSearch\Dependency\Service\ProductSetPageSearchToUtilEncodingInterface
+     */
+    protected $utilEncodingService;
+
+    /**
+     * @var \Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToSearchInterface
+     */
+    protected $searchFacade;
+
+    /**
+     * @var \Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToProductSetInterface
+     */
+    protected $productSetFacade;
+
+    /**
+     * @var \Spryker\Shared\Kernel\Store
+     */
+    protected $store;
+
+    /**
+     * @var bool
+     */
+    protected $isSendingToQueue = true;
+
+    /**
+     * @param \Spryker\Zed\ProductSetPageSearch\Persistence\ProductSetPageSearchQueryContainerInterface $queryContainer
+     * @param \Spryker\Zed\ProductSetPageSearch\Dependency\Service\ProductSetPageSearchToUtilEncodingInterface $utilEncodingService
+     * @param \Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToSearchInterface $searchFacade
+     * @param \Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToProductSetInterface $productSetFacade
+     * @param \Spryker\Shared\Kernel\Store $store
+     * @param bool $isSendingToQueue
+     */
+    public function __construct(
+        ProductSetPageSearchQueryContainerInterface $queryContainer,
+        ProductSetPageSearchToUtilEncodingInterface $utilEncodingService,
+        ProductSetPageSearchToSearchInterface $searchFacade,
+        ProductSetPageSearchToProductSetInterface $productSetFacade,
+        Store $store,
+        $isSendingToQueue
+    ) {
+        $this->queryContainer = $queryContainer;
+        $this->utilEncodingService = $utilEncodingService;
+        $this->searchFacade = $searchFacade;
+        $this->productSetFacade = $productSetFacade;
+        $this->store = $store;
+        $this->isSendingToQueue = $isSendingToQueue;
+    }
+
+    /**
+     * @param array $productSetIds
      *
      * @return void
      */
-    protected function publish(array $productAbstractIds)
+    public function publish(array $productSetIds)
     {
-        $spyProductSetEntities = $this->findProductSetLocalizedEntities($productAbstractIds);
-        $spyProductSetPageSearchEntities = $this->findProductSetPageSearchEntitiesByProductAbstractIds($productAbstractIds);
+        $spyProductSetEntities = $this->findProductSetLocalizedEntities($productSetIds);
+        $spyProductSetPageSearchEntities = $this->findProductSetPageSearchEntitiesByProductSetIds($productSetIds);
 
         $this->storeData($spyProductSetEntities, $spyProductSetPageSearchEntities);
     }
 
     /**
-     * @param array $productAbstractIds
+     * @param array $productSetIds
      *
      * @return void
      */
-    protected function unpublish(array $productAbstractIds)
+    public function unpublish(array $productSetIds)
     {
-        $spyProductSetPageSearchEntities = $this->findProductSetPageSearchEntitiesByProductAbstractIds($productAbstractIds);
+        $spyProductSetPageSearchEntities = $this->findProductSetPageSearchEntitiesByProductSetIds($productSetIds);
         foreach ($spyProductSetPageSearchEntities as $spyProductSetPageSearchEntityLocales) {
             foreach ($spyProductSetPageSearchEntityLocales as $spyProductSetPageSearchEntityLocale) {
                 $spyProductSetPageSearchEntityLocale->delete();
@@ -64,9 +118,11 @@ class AbstractProductSetPageSearchListener extends AbstractPlugin
             $localeName = $spyProductSetLocalizedEntity['SpyLocale']['locale_name'];
             if (isset($spyProductSetStorageEntities[$idProductSet][$localeName])) {
                 $this->storeDataSet($spyProductSetLocalizedEntity, $spyProductSetStorageEntities[$idProductSet][$localeName]);
-            } else {
-                $this->storeDataSet($spyProductSetLocalizedEntity);
+
+                continue;
             }
+
+            $this->storeDataSet($spyProductSetLocalizedEntity);
         }
     }
 
@@ -96,14 +152,14 @@ class AbstractProductSetPageSearchListener extends AbstractPlugin
             ->setIdLocale($spyProductSetLocalizedEntity['SpyLocale']['id_locale']);
 
         $data = $this
-            ->getFactory()->getSearchFacade()
+            ->searchFacade
             ->transformPageMapToDocumentByMapperName($productSetPageSearchTransfer->toArray(), $localeTransfer, ProductSetPageSearchConstants::PRODUCT_SET_RESOURCE_NAME);
 
         $spyProductSetPageSearchEntity->setFkProductSet($spyProductSetLocalizedEntity['SpyProductSet'][static::COL_ID_PRODUCT_SET]);
-        $spyProductSetPageSearchEntity->setStructuredData($this->getFactory()->getUtilEncoding()->encodeJson($productSetPageSearchTransfer->toArray()));
+        $spyProductSetPageSearchEntity->setStructuredData($this->utilEncodingService->encodeJson($productSetPageSearchTransfer->toArray()));
         $spyProductSetPageSearchEntity->setData($data);
-        $spyProductSetPageSearchEntity->setStore($this->getStoreName());
         $spyProductSetPageSearchEntity->setLocale($spyProductSetLocalizedEntity['SpyLocale']['locale_name']);
+        $spyProductSetPageSearchEntity->setIsSendingToQueue($this->isSendingToQueue);
         $spyProductSetPageSearchEntity->save();
     }
 
@@ -122,7 +178,7 @@ class AbstractProductSetPageSearchListener extends AbstractPlugin
         $productSetPageSearchTransfer->fromArray($spyProductAbstractLocalizedEntity, true);
         $productSetPageSearchTransfer->fromArray($spyProductAbstractLocalizedEntity['SpyProductSet'], true);
         $productSetPageSearchTransfer->setLocale($spyProductAbstractLocalizedEntity['SpyLocale']['locale_name']);
-        $productSetPageSearchTransfer->setStore($this->getStoreName());
+        $productSetPageSearchTransfer->setStore($this->store->getStoreName());
         $productSetPageSearchTransfer->setIdProductAbstracts($productAbstractIds);
         $productSetPageSearchTransfer->setType('product_set');
         $productSetPageSearchTransfer->setImageSets($this->getProductSetImageSets($spyProductAbstractLocalizedEntity['fk_product_set'], $spyProductAbstractLocalizedEntity['SpyLocale']['id_locale']));
@@ -137,7 +193,7 @@ class AbstractProductSetPageSearchListener extends AbstractPlugin
      */
     protected function findProductSetLocalizedEntities(array $productSetIds)
     {
-        return $this->getQueryContainer()->queryProductSetDataByIds($productSetIds)->find()->getData();
+        return $this->queryContainer->queryProductSetDataByIds($productSetIds)->find()->getData();
     }
 
     /**
@@ -145,23 +201,15 @@ class AbstractProductSetPageSearchListener extends AbstractPlugin
      *
      * @return array
      */
-    protected function findProductSetPageSearchEntitiesByProductAbstractIds(array $productSetIds)
+    protected function findProductSetPageSearchEntitiesByProductSetIds(array $productSetIds)
     {
-        $productSetStorageEntities = $this->getQueryContainer()->queryProductSetPageSearchPageByIds($productSetIds)->find();
+        $productSetStorageEntities = $this->queryContainer->queryProductSetPageSearchPageByIds($productSetIds)->find();
         $productSetStorageEntitiesByIdAndLocale = [];
         foreach ($productSetStorageEntities as $productSetStorageEntity) {
             $productSetStorageEntitiesByIdAndLocale[$productSetStorageEntity->getFkProductSet()][$productSetStorageEntity->getLocale()] = $productSetStorageEntity;
         }
 
         return $productSetStorageEntitiesByIdAndLocale;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getStoreName()
-    {
-        return $this->getFactory()->getStore()->getStoreName();
     }
 
     /**
@@ -172,7 +220,7 @@ class AbstractProductSetPageSearchListener extends AbstractPlugin
      */
     public function getProductSetImageSets($idProductSet, $idLocale)
     {
-        $productImageSetTransfers = $this->getFactory()->getProductSetFacade()->getCombinedProductSetImageSets($idProductSet, $idLocale);
+        $productImageSetTransfers = $this->productSetFacade->getCombinedProductSetImageSets($idProductSet, $idLocale);
 
         $imageSets = [];
         foreach ($productImageSetTransfers as $productImageSetTransfer) {

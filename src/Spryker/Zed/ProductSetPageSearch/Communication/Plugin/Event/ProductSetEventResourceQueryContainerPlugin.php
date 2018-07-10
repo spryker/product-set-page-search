@@ -19,7 +19,7 @@ use Spryker\Zed\ProductSet\Dependency\ProductSetEvents;
  * @method \Spryker\Zed\ProductSetPageSearch\Business\ProductSetPageSearchFacadeInterface getFacade()
  * @method \Spryker\Zed\ProductSetPageSearch\Communication\ProductSetPageSearchCommunicationFactory getFactory()
  */
-class ProductSetEventResourcePlugin extends AbstractPlugin implements EventResourceQueryContainerPluginInterface
+class ProductSetEventResourceQueryContainerPlugin extends AbstractPlugin implements EventResourceQueryContainerPluginInterface
 {
     /**
      * Specification:

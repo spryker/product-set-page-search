@@ -4,4 +4,4 @@ parameters:
             identifier: missingType.iterableValue
     level: 7
     excludePaths:
-        - '%rootDir%/../../../vendor/spryker/spryker/Bundles/ProductSetPageSearch/src/Spryker/Client/ProductSetPageSearch/Plugin/Elasticsearch/Query/ProductSetPageSearchListQueryPlugin.php'
+        - '%rootDir%/../../../src/Spryker/ProductSetPageSearch/src/Spryker/Client/ProductSetPageSearch/Plugin/Elasticsearch/Query/ProductSetPageSearchListQueryPlugin.php'

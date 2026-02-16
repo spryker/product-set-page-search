@@ -76,7 +76,7 @@ class ProductSetPageSearchExpander implements ProductSetPageSearchExpanderInterf
     /**
      * @param array<string, list<array<string, mixed>>> $productImageSetsData
      *
-     * @return list<string>
+     * @return array<string>
      */
     protected function getGlossaryKeys(array $productImageSetsData): array
     {

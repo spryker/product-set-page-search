@@ -10,7 +10,7 @@ namespace Spryker\Zed\ProductSetPageSearch\Business\Reader;
 interface GlossaryReaderInterface
 {
     /**
-     * @param list<string> $glossaryKeys
+     * @param array<string> $glossaryKeys
      * @param string $localeName
      *
      * @return array<string, string|null>

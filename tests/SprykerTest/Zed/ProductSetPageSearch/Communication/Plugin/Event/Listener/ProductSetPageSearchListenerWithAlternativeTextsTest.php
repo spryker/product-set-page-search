@@ -62,9 +62,6 @@ class ProductSetPageSearchListenerWithAlternativeTextsTest extends Unit
      */
     protected LocaleTransfer $localeTransfer;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -72,9 +69,6 @@ class ProductSetPageSearchListenerWithAlternativeTextsTest extends Unit
         $this->localeTransfer = $this->tester->haveLocale([LocaleTransfer::LOCALE_NAME => static::LOCALE_NAME]);
     }
 
-    /**
-     * @return void
-     */
     public function testProductSetPageSearchListenerStoreDataWithAlternativeTexts(): void
     {
         // Arrange
@@ -124,9 +118,6 @@ class ProductSetPageSearchListenerWithAlternativeTextsTest extends Unit
         $this->assertSame($largeAltTextTranslation, $productSetImages[0][static::KEY_ALT_TEXT_LARGE]);
     }
 
-    /**
-     * @return void
-     */
     public function testProductSetPageSearchListenerStoreDataWithAlternativeTextsWithoutTranslations(): void
     {
         // Arrange
@@ -162,9 +153,6 @@ class ProductSetPageSearchListenerWithAlternativeTextsTest extends Unit
         $this->assertNull($productSetImages[0][static::KEY_ALT_TEXT_LARGE]);
     }
 
-    /**
-     * @return void
-     */
     public function testProductSetPageSearchListenerStoreDataWithAlternativeTextsWithDisabledConfig(): void
     {
         // Arrange

@@ -25,14 +25,6 @@ class ProductSetPageSearchWriter implements ProductSetPageSearchWriterInterface
      */
     public const COL_ID_PRODUCT_SET = 'id_product_set';
 
-    /**
-     * @param \Spryker\Zed\ProductSetPageSearch\Persistence\ProductSetPageSearchQueryContainerInterface $queryContainer
-     * @param \Spryker\Zed\ProductSetPageSearch\Dependency\Service\ProductSetPageSearchToUtilEncodingInterface $utilEncodingService
-     * @param \Spryker\Zed\ProductSetPageSearch\Business\DataMapper\ProductSetSearchDataMapperInterface $productSetPageSearchDataMapper
-     * @param \Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToProductSetInterface $productSetFacade
-     * @param bool $isSendingToQueue
-     * @param \Spryker\Zed\ProductSetPageSearch\Business\Expander\ProductSetPageSearchExpanderInterface|null $productSetPageSearchExpander
-     */
     public function __construct(
         protected ProductSetPageSearchQueryContainerInterface $queryContainer,
         protected ProductSetPageSearchToUtilEncodingInterface $utilEncodingService,

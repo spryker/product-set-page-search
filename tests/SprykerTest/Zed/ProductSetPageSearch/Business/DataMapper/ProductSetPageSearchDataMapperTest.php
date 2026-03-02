@@ -49,9 +49,6 @@ class ProductSetPageSearchDataMapperTest extends Unit
         $this->assertEquals($expected, $result);
     }
 
-    /**
-     * @return array
-     */
     public function canMapRawDataToSearchDataProvider(): array
     {
         return require codecept_data_dir('Fixtures/SearchDataMap/product_set_page_data_map_data_provider.php');

@@ -205,9 +205,6 @@ class ProductSetPageSearchListQueryPlugin extends AbstractPlugin implements Quer
         return $this;
     }
 
-    /**
-     * @return void
-     */
     protected function setupDefaultSearchContext(): void
     {
         $searchContextTransfer = new SearchContextTransfer();
@@ -216,9 +213,6 @@ class ProductSetPageSearchListQueryPlugin extends AbstractPlugin implements Quer
         $this->searchContextTransfer = $searchContextTransfer;
     }
 
-    /**
-     * @return bool
-     */
     protected function hasSearchContext(): bool
     {
         return (bool)$this->searchContextTransfer;

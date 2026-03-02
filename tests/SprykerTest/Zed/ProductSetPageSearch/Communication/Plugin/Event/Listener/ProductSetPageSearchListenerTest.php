@@ -62,9 +62,6 @@ class ProductSetPageSearchListenerTest extends Unit
      */
     protected $productSetFacadeInterface;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -77,9 +74,6 @@ class ProductSetPageSearchListenerTest extends Unit
         $this->tester->mockConfigMethod('isSendingToQueue', false);
     }
 
-    /**
-     * @return void
-     */
     public function testProductSetPageSearchListenerStoreData(): void
     {
         SpyProductSetPageSearchQuery::create()->filterByFkProductSet(1)->delete();
@@ -100,9 +94,6 @@ class ProductSetPageSearchListenerTest extends Unit
         $this->assertProductSetPageSearch();
     }
 
-    /**
-     * @return void
-     */
     public function testProductSetDataPageSearchListenerStoreData(): void
     {
         SpyProductSetPageSearchQuery::create()->filterByFkProductSet(1)->delete();
@@ -125,9 +116,6 @@ class ProductSetPageSearchListenerTest extends Unit
         $this->assertProductSetPageSearch();
     }
 
-    /**
-     * @return void
-     */
     public function testProductSetSearchUnpublishListener(): void
     {
         // Arrange
@@ -164,9 +152,6 @@ class ProductSetPageSearchListenerTest extends Unit
         );
     }
 
-    /**
-     * @return void
-     */
     public function testProductAbstractProductSetPageSearchListenerStoreData(): void
     {
         SpyProductSetPageSearchQuery::create()->filterByFkProductSet(1)->delete();
@@ -189,9 +174,6 @@ class ProductSetPageSearchListenerTest extends Unit
         $this->assertProductSetPageSearch();
     }
 
-    /**
-     * @return void
-     */
     public function testProductSetPageProductImageSetSearchListenerStoreData(): void
     {
         SpyProductSetPageSearchQuery::create()->filterByFkProductSet(1)->delete();
@@ -214,9 +196,6 @@ class ProductSetPageSearchListenerTest extends Unit
         $this->assertProductSetPageSearch();
     }
 
-    /**
-     * @return void
-     */
     public function testProductSetPageUrlSearchListenerStoreData(): void
     {
         SpyProductSetPageSearchQuery::create()->filterByFkProductSet(1)->delete();
@@ -242,9 +221,6 @@ class ProductSetPageSearchListenerTest extends Unit
         $this->assertProductSetPageSearch();
     }
 
-    /**
-     * @return void
-     */
     public function testProductSetPageProductImageSearchListenerStoreData(): void
     {
         $this->markTestSkipped(
@@ -270,9 +246,6 @@ class ProductSetPageSearchListenerTest extends Unit
         $this->assertProductSetPageSearch();
     }
 
-    /**
-     * @return void
-     */
     public function testProductSetPageProductImageSetImageSearchListenerStoreData(): void
     {
         $this->markTestSkipped(
@@ -298,9 +271,6 @@ class ProductSetPageSearchListenerTest extends Unit
         $this->assertProductSetPageSearch();
     }
 
-    /**
-     * @return void
-     */
     protected function assertProductSetPageSearch(): void
     {
         $productSet = SpyProductSetPageSearchQuery::create()->orderByFkProductSet()->findOneByFkProductSet(1);

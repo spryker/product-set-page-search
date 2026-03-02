@@ -22,9 +22,6 @@ class ProductSetPageSearchToProductImageFacadeBridge implements ProductSetPageSe
         $this->productImageFacade = $productImageFacade;
     }
 
-    /**
-     * @return bool
-     */
     public function isProductImageAlternativeTextEnabled(): bool
     {
         return $this->productImageFacade->isProductImageAlternativeTextEnabled();

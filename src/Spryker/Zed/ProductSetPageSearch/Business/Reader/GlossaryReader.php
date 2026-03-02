@@ -12,9 +12,6 @@ use Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToGlo
 
 class GlossaryReader implements GlossaryReaderInterface
 {
-    /**
-     * @param \Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToGlossaryFacadeInterface $glossaryFacade
-     */
     public function __construct(protected ProductSetPageSearchToGlossaryFacadeInterface $glossaryFacade)
     {
     }

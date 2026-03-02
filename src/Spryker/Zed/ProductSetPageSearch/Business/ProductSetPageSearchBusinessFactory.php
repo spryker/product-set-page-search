@@ -57,17 +57,11 @@ class ProductSetPageSearchBusinessFactory extends AbstractBusinessFactory
         return $this->getProvidedDependency(ProductSetPageSearchDependencyProvider::FACADE_PRODUCT_SET);
     }
 
-    /**
-     * @return \Spryker\Zed\ProductSetPageSearch\Business\DataMapper\ProductSetSearchDataMapperInterface
-     */
     public function createProductSetSearchDataMapper(): ProductSetSearchDataMapperInterface
     {
         return new ProductSetSearchDataMapper();
     }
 
-    /**
-     * @return \Spryker\Zed\ProductSetPageSearch\Business\Expander\ProductSetPageSearchExpanderInterface|null
-     */
     public function createProductSetPageSearchExpander(): ?ProductSetPageSearchExpanderInterface
     {
         if (!$this->getProductImageFacade()->isProductImageAlternativeTextEnabled()) {
@@ -79,9 +73,6 @@ class ProductSetPageSearchBusinessFactory extends AbstractBusinessFactory
         );
     }
 
-    /**
-     * @return \Spryker\Zed\ProductSetPageSearch\Business\Reader\GlossaryReaderInterface|null
-     */
     public function createGlossaryReader(): ?GlossaryReaderInterface
     {
         if (!$this->getProductImageFacade()->isProductImageAlternativeTextEnabled()) {
@@ -93,9 +84,6 @@ class ProductSetPageSearchBusinessFactory extends AbstractBusinessFactory
         );
     }
 
-    /**
-     * @return \Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToGlossaryFacadeInterface
-     */
     public function getGlossaryFacade(): ProductSetPageSearchToGlossaryFacadeInterface
     {
         $this->assertProductImageAlternativeTextEnabled();
@@ -103,9 +91,6 @@ class ProductSetPageSearchBusinessFactory extends AbstractBusinessFactory
         return $this->getProvidedDependency(ProductSetPageSearchDependencyProvider::FACADE_GLOSSARY);
     }
 
-    /**
-     * @return \Spryker\Zed\ProductSetPageSearch\Dependency\Facade\ProductSetPageSearchToProductImageFacadeInterface
-     */
     public function getProductImageFacade(): ProductSetPageSearchToProductImageFacadeInterface
     {
         return $this->getProvidedDependency(ProductSetPageSearchDependencyProvider::FACADE_PRODUCT_IMAGE);

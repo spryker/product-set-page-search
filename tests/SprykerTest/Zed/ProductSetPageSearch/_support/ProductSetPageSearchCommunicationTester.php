@@ -57,9 +57,6 @@ class ProductSetPageSearchCommunicationTester extends Actor
      */
     protected const KEY_IMAGE_SETS = 'image_sets';
 
-    /**
-     * @return bool
-     */
     public function isSuiteProject(): bool
     {
         if (getenv(static::PARAM_PROJECT) === static::PROJECT_SUITE) {
@@ -69,9 +66,6 @@ class ProductSetPageSearchCommunicationTester extends Actor
         return false;
     }
 
-    /**
-     * @return \Generated\Shared\Transfer\ProductSetTransfer
-     */
     public function generateProductSetTransfer(): ProductSetTransfer
     {
         $localizedProductSetTransfer = (new LocalizedProductSetBuilder())
@@ -131,11 +125,6 @@ class ProductSetPageSearchCommunicationTester extends Actor
         return $this->getLocator()->productSet()->facade()->createProductSet($productSetTransfer);
     }
 
-    /**
-     * @param int $idProductSet
-     *
-     * @return array
-     */
     public function getProductSetImages(int $idProductSet): array
     {
         $productSetStorage = SpyProductSetPageSearchQuery::create()->findOneByFkProductSet($idProductSet);

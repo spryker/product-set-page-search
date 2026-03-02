@@ -9,8 +9,5 @@ namespace Spryker\Zed\ProductSetPageSearch\Dependency\Facade;
 
 interface ProductSetPageSearchToProductImageFacadeInterface
 {
-    /**
-     * @return bool
-     */
     public function isProductImageAlternativeTextEnabled(): bool;
 }

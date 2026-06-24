@@ -25,6 +25,8 @@ use Spryker\Zed\Search\Dependency\Plugin\NamedPageMapInterface;
 class ProductSetPageMapPlugin extends AbstractPlugin implements NamedPageMapInterface
 {
     /**
+     * @api
+     *
      * @var array<string>
      */
     public const FILTERED_KEYS = [

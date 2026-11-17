@@ -43,9 +43,9 @@ class ProductSetPageSearchListResultFormatterPlugin extends AbstractElasticsearc
         foreach ($searchResult->getResults() as $document) {
             $productSetPageSearchStorageData = $document->getSource()[PageIndexMap::SEARCH_RESULT_DATA];
             $productSetPageSearchStorageData['image_sets'] = $this->formatImageSets($productSetPageSearchStorageData['image_sets']);
-            $ProductSetPageSearchStorageTransfer = $this->mapToTransfer($productSetPageSearchStorageData);
+            $productSetPageSearchStorageTransfer = $this->mapToTransfer($productSetPageSearchStorageData);
 
-            $productSetPageSearchs[] = $ProductSetPageSearchStorageTransfer;
+            $productSetPageSearchs[] = $productSetPageSearchStorageTransfer;
         }
 
         return $productSetPageSearchs;
